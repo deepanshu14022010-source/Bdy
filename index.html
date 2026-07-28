@@ -34,25 +34,33 @@
   }
 
   /* ---------- Animated gradient mesh background ---------- */
+  /* Transform-only animation so the compositor handles it (no per-frame repaint of the blur) */
   .bg-mesh {
     position: fixed;
-    inset: -20%;
+    inset: 0;
     z-index: -3;
-    background:
-      radial-gradient(closest-side at 20% 25%, var(--pink), transparent 70%),
-      radial-gradient(closest-side at 80% 20%, var(--lilac), transparent 70%),
-      radial-gradient(closest-side at 25% 80%, var(--mint), transparent 70%),
-      radial-gradient(closest-side at 75% 75%, var(--pink), transparent 70%),
-      radial-gradient(closest-side at 50% 50%, var(--lilac), transparent 75%);
-    background-size: 200% 200%;
-    filter: blur(40px) saturate(1.1);
-    animation: meshShift 22s ease-in-out infinite alternate;
+    overflow: hidden;
+    background: linear-gradient(135deg, #ffe4f3, #f2e4ff 55%, #e4fff6);
   }
-  @keyframes meshShift {
-    0%   { background-position: 0% 0%, 100% 0%, 0% 100%, 100% 100%, 50% 50%; }
-    50%  { background-position: 40% 30%, 60% 40%, 30% 60%, 70% 50%, 55% 45%; }
-    100% { background-position: 100% 100%, 0% 100%, 100% 0%, 0% 0%, 45% 55%; }
+  .bg-mesh .blob {
+    position: absolute;
+    width: 60vmax;
+    height: 60vmax;
+    border-radius: 50%;
+    filter: blur(50px);
+    opacity: 0.55;
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
   }
+  .blob1 { background: var(--pink);  top: -20%;  left: -15%; animation: drift1 26s ease-in-out infinite; }
+  .blob2 { background: var(--lilac); top: -15%;  right: -20%; animation: drift2 30s ease-in-out infinite; }
+  .blob3 { background: var(--mint);  bottom: -25%; left: 0%;  animation: drift3 24s ease-in-out infinite; }
+  .blob4 { background: var(--lilac); bottom: -20%; right: -15%; animation: drift4 28s ease-in-out infinite; }
+
+  @keyframes drift1 { 0%, 100% { transform: translate3d(0, 0, 0) scale(1); }    50% { transform: translate3d(6vw, 5vh, 0) scale(1.12); } }
+  @keyframes drift2 { 0%, 100% { transform: translate3d(0, 0, 0) scale(1.05); } 50% { transform: translate3d(-5vw, 6vh, 0) scale(0.95); } }
+  @keyframes drift3 { 0%, 100% { transform: translate3d(0, 0, 0) scale(1); }    50% { transform: translate3d(5vw, -6vh, 0) scale(1.1); } }
+  @keyframes drift4 { 0%, 100% { transform: translate3d(0, 0, 0) scale(0.95); } 50% { transform: translate3d(-6vw, -5vh, 0) scale(1.08); } }
 
   /* ---------- Floating decorative elements ---------- */
   .floaties { position: fixed; inset: 0; z-index: -2; pointer-events: none; overflow: hidden; }
@@ -61,14 +69,15 @@
     font-size: 1.6rem;
     opacity: 0.55;
     animation: floatUp linear infinite;
-    filter: drop-shadow(0 4px 8px rgba(255, 79, 163, 0.25));
+    text-shadow: 0 3px 6px rgba(255, 79, 163, 0.2);
     will-change: transform;
+    transform: translate3d(0, 0, 0);
   }
   @keyframes floatUp {
-    0%   { transform: translateY(110vh) rotate(0deg) scale(0.8); opacity: 0; }
+    0%   { transform: translate3d(0, 110vh, 0) rotate(0deg) scale(0.8); opacity: 0; }
     10%  { opacity: 0.6; }
     90%  { opacity: 0.6; }
-    100% { transform: translateY(-15vh) rotate(360deg) scale(1.1); opacity: 0; }
+    100% { transform: translate3d(0, -15vh, 0) rotate(360deg) scale(1.1); opacity: 0; }
   }
 
   /* ---------- Layout ---------- */
@@ -87,8 +96,8 @@
   /* ---------- Glass cards ---------- */
   .glass {
     background: var(--glass);
-    backdrop-filter: blur(16px) saturate(1.4);
-    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+    backdrop-filter: blur(10px) saturate(1.3);
+    -webkit-backdrop-filter: blur(10px) saturate(1.3);
     border: 1.5px solid var(--glass-border);
     border-radius: 28px;
     box-shadow:
@@ -246,13 +255,18 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .bg-mesh, .floatie, .fab, .closing .emojis span { animation: none; }
+    .bg-mesh .blob, .floatie, .fab, .closing .emojis span { animation: none; }
     .reveal { transition: opacity 0.4s ease; transform: none; }
   }
 </style>
 </head>
 <body>
-  <div class="bg-mesh"></div>
+  <div class="bg-mesh">
+    <div class="blob blob1"></div>
+    <div class="blob blob2"></div>
+    <div class="blob blob3"></div>
+    <div class="blob blob4"></div>
+  </div>
   <div class="floaties" id="floaties"></div>
   <canvas id="confetti"></canvas>
 
@@ -310,7 +324,7 @@
     (function () {
       const emojis = ["💗", "🎀", "✨", "⭐", "🌸", "🎈", "💕", "🦋"];
       const wrap = document.getElementById("floaties");
-      const count = window.innerWidth < 600 ? 14 : 22;
+      const count = window.innerWidth < 600 ? 8 : 12;
       for (let i = 0; i < count; i++) {
         const el = document.createElement("div");
         el.className = "floatie";
@@ -357,8 +371,12 @@
       const colors = ["#FF4FA3", "#E0BBFF", "#B8FFF0", "#FFD1E8", "#ffef8f", "#ff8ac2"];
       const shapes = ["rect", "circle", "heart"];
 
+      const MAX_PARTICLES = 220;
+
       function burst(n) {
         const cx = canvas.width / 2;
+        const room = MAX_PARTICLES - particles.length;
+        n = Math.max(0, Math.min(n, room));
         for (let i = 0; i < n; i++) {
           const angle = Math.random() * Math.PI * 2;
           const speed = 4 + Math.random() * 9;
