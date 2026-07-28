@@ -348,8 +348,42 @@
     font-weight: 500;
   }
 
+  /* ---------- Scroll-down sticker ---------- */
+  .scroll-cue {
+    margin-top: 42px;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.55);
+    border: 1.5px solid rgba(255, 255, 255, 0.8);
+    border-radius: 999px;
+    box-shadow: 0 8px 20px rgba(255, 79, 163, 0.18);
+    color: var(--hot);
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.4px;
+    transform: rotate(-3deg);
+    animation: cueBounce 2.2s ease-in-out infinite;
+    animation-play-state: var(--play-state);
+  }
+  .scroll-cue svg {
+    animation: chevronNudge 2.2s ease-in-out infinite;
+    animation-play-state: var(--play-state);
+  }
+  @keyframes cueBounce {
+    0%, 100% { transform: rotate(-3deg) translateY(0); }
+    50%      { transform: rotate(-3deg) translateY(-5px); }
+  }
+  @keyframes chevronNudge {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(4px); }
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    .bg-mesh .blob, .floatie, .fab, .closing .emojis span { animation: none; }
+    .bg-mesh .blob, .floatie, .fab, .closing .emojis span, .scroll-cue, .scroll-cue svg { animation: none; }
     .reveal { transition: opacity 0.4s ease; transform: none; }
     body.shake { animation: none; }
     #flash.hit { animation: none; }
@@ -382,6 +416,12 @@
       <h1>Happy Birthday<br />Varnika 🎀</h1>
       <p class="sub">a little corner of the internet, just for you 💗</p>
       <button class="btn" id="surpriseBtn">tap for a surprise ✨</button>
+      <div class="scroll-cue" aria-hidden="true">
+        <span>scroll down</span>
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </div>
     </section>
 
     <!-- 2. PHOTO 1 -->
