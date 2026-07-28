@@ -273,9 +273,86 @@
     pointer-events: none;
   }
 
+  /* ---------- Screen flash (big-surprise moment) ---------- */
+  #flash {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    pointer-events: none;
+    background: radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.95), rgba(255, 209, 232, 0.3) 45%, transparent 75%);
+    opacity: 0;
+  }
+  #flash.hit { animation: flashPop 0.7s ease-out; }
+  @keyframes flashPop {
+    0%   { opacity: 0; }
+    15%  { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+  /* ---------- Screen shake (big-surprise moment) ---------- */
+  @keyframes shake {
+    10%, 90% { transform: translate3d(-1px, 0, 0); }
+    20%, 80% { transform: translate3d(2px, 0, 0); }
+    30%, 50%, 70% { transform: translate3d(-5px, 0, 0); }
+    40%, 60% { transform: translate3d(5px, 0, 0); }
+  }
+  body.shake { animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both; }
+
+  /* ---------- Surprise reveal card ---------- */
+  #surpriseCard {
+    position: fixed;
+    inset: 0;
+    z-index: 110;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(107, 58, 91, 0.25);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+  }
+  #surpriseCard.active { opacity: 1; pointer-events: auto; }
+  #surpriseCard .card {
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(14px) saturate(1.4);
+    -webkit-backdrop-filter: blur(14px) saturate(1.4);
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    border-radius: 28px;
+    padding: 38px 28px;
+    max-width: 380px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(255, 79, 163, 0.4);
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  #surpriseCard.active .card { animation: cardPop 0.55s cubic-bezier(0.2, 1.6, 0.4, 1) forwards; }
+  @keyframes cardPop { 0% { transform: scale(0.6); opacity: 0; } 60% { transform: scale(1.06); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+  #surpriseCard .emoji { font-size: 3rem; margin-bottom: 10px; }
+  #surpriseCard h3 {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(1.5rem, 7vw, 2rem);
+    color: var(--hot);
+    margin-bottom: 10px;
+  }
+  #surpriseCard p {
+    font-size: 1.05rem;
+    font-weight: 600;
+    line-height: 1.6;
+  }
+  #surpriseCard .hint {
+    margin-top: 16px;
+    font-size: 0.85rem;
+    opacity: 0.6;
+    font-weight: 500;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .bg-mesh .blob, .floatie, .fab, .closing .emojis span { animation: none; }
     .reveal { transition: opacity 0.4s ease; transform: none; }
+    body.shake { animation: none; }
+    #flash.hit { animation: none; }
   }
 </style>
 </head>
@@ -288,6 +365,16 @@
   </div>
   <div class="floaties" id="floaties"></div>
   <canvas id="confetti"></canvas>
+  <div id="flash"></div>
+
+  <div id="surpriseCard">
+    <div class="card">
+      <div class="emoji" id="surpriseEmoji">💖</div>
+      <h3 id="surpriseTitle">Surprise!</h3>
+      <p id="surpriseText"></p>
+      <div class="hint">tap anywhere to close</div>
+    </div>
+  </div>
 
   <main>
     <!-- 1. HERO -->
@@ -391,10 +478,11 @@
       /* rect/circle only — cheap per-frame fills; the bezier heart draw was the priciest shape on low-end phones */
       const shapes = ["rect", "circle"];
 
-      const MAX_PARTICLES = 140;
+      const MAX_PARTICLES = 260;
 
-      function burst(n) {
-        const cx = canvas.width / 2;
+      function burst(n, originX, originY) {
+        const cx = originX ?? canvas.width / 2;
+        const cy = originY ?? canvas.height * 0.35;
         const room = MAX_PARTICLES - particles.length;
         n = Math.max(0, Math.min(n, room));
         for (let i = 0; i < n; i++) {
@@ -402,7 +490,7 @@
           const speed = 4 + Math.random() * 9;
           particles.push({
             x: cx + (Math.random() - 0.5) * 120,
-            y: canvas.height * 0.35 + (Math.random() - 0.5) * 60,
+            y: cy + (Math.random() - 0.5) * 60,
             vx: Math.cos(angle) * speed,
             vy: Math.sin(angle) * speed - 4,
             g: 0.15 + Math.random() * 0.1,
@@ -448,12 +536,89 @@
         }
       }
 
-      return { burst };
+      /* several staggered bursts from different points = fireworks, not one puff */
+      function fireworks() {
+        const w = canvas.width;
+        const points = [
+          { x: w * 0.22, y: canvas.height * 0.28, delay: 0 },
+          { x: w * 0.78, y: canvas.height * 0.22, delay: 140 },
+          { x: w * 0.5,  y: canvas.height * 0.32, delay: 280 },
+          { x: w * 0.35, y: canvas.height * 0.24, delay: 420 },
+        ];
+        points.forEach((p) => setTimeout(() => burst(55, p.x, p.y), p.delay));
+      }
+
+      return { burst, fireworks };
     })();
 
-    document.getElementById("surpriseBtn").addEventListener("click", () => confetti.burst(80), { passive: true });
-    document.getElementById("finalBtn").addEventListener("click", () => confetti.burst(100), { passive: true });
-    document.getElementById("fab").addEventListener("click", () => confetti.burst(90), { passive: true });
+    /* ---------- Synthesized celebration chime (no audio file needed) ---------- */
+    let audioCtx = null;
+    function playChime() {
+      try {
+        audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === "suspended") audioCtx.resume();
+        const notes = [523.25, 659.25, 783.99, 1046.5]; // C5 E5 G5 C6
+        notes.forEach((freq, i) => {
+          const t0 = audioCtx.currentTime + i * 0.12;
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = "sine";
+          osc.frequency.value = freq;
+          gain.gain.setValueAtTime(0, t0);
+          gain.gain.linearRampToValueAtTime(0.18, t0 + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, t0 + 0.45);
+          osc.connect(gain).connect(audioCtx.destination);
+          osc.start(t0);
+          osc.stop(t0 + 0.5);
+        });
+      } catch (e) { /* Web Audio unsupported — silently skip, visuals still play */ }
+    }
+
+    /* ---------- Surprise reveal card ---------- */
+    const surpriseCard = document.getElementById("surpriseCard");
+    const surpriseEmoji = document.getElementById("surpriseEmoji");
+    const surpriseTitle = document.getElementById("surpriseTitle");
+    const surpriseText = document.getElementById("surpriseText");
+    let surpriseHideTimer = null;
+
+    function showSurpriseCard(emoji, title, text) {
+      surpriseEmoji.textContent = emoji;
+      surpriseTitle.textContent = title;
+      surpriseText.textContent = text;
+      surpriseCard.classList.add("active");
+      clearTimeout(surpriseHideTimer);
+      surpriseHideTimer = setTimeout(hideSurpriseCard, 5200);
+    }
+    function hideSurpriseCard() {
+      surpriseCard.classList.remove("active");
+      clearTimeout(surpriseHideTimer);
+    }
+    surpriseCard.addEventListener("click", hideSurpriseCard);
+
+    /* ---------- The big surprise: shake + flash + fireworks + chime + reveal card ---------- */
+    function bigSurprise(emoji, title, text) {
+      document.body.classList.remove("shake");
+      void document.body.offsetWidth; // restart the animation if it's already mid-run
+      document.body.classList.add("shake");
+      setTimeout(() => document.body.classList.remove("shake"), 550);
+
+      const flash = document.getElementById("flash");
+      flash.classList.remove("hit");
+      void flash.offsetWidth;
+      flash.classList.add("hit");
+
+      playChime();
+      confetti.fireworks();
+      setTimeout(() => showSurpriseCard(emoji, title, text), 550);
+    }
+
+    document.getElementById("surpriseBtn").addEventListener("click", () =>
+      bigSurprise("💖", "SURPRISE, VARNIKA!", "This whole page exists just to remind you how loved you are.")
+    );
+    document.getElementById("finalBtn").addEventListener("click", () =>
+      bigSurprise("🎂", "One more thing...", "Here's to a year that finally gives back to you. I love you, always.")
+    );
+    document.getElementById("fab").addEventListener("click", () => confetti.burst(70), { passive: true });
 
     /* gentle confetti on load */
     window.addEventListener("load", () => setTimeout(() => confetti.burst(55), 500));
