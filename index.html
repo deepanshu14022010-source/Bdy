@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
 <title>Happy Birthday Varnika 🎀</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -20,6 +20,8 @@
     --body: "Quicksand", system-ui, sans-serif;
   }
 
+  :root { --play-state: running; }
+
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   html { scroll-behavior: smooth; }
@@ -31,6 +33,9 @@
     overflow-x: hidden;
     position: relative;
     background: #ffe9f5;
+    touch-action: pan-y;
+    overscroll-behavior-y: contain;
+    -webkit-tap-highlight-color: transparent;
   }
 
   /* ---------- Animated gradient mesh background ---------- */
@@ -51,6 +56,7 @@
     opacity: 0.55;
     will-change: transform;
     transform: translate3d(0, 0, 0);
+    animation-play-state: var(--play-state);
   }
   .blob1 { background: var(--pink);  top: -20%;  left: -15%; animation: drift1 26s ease-in-out infinite; }
   .blob2 { background: var(--lilac); top: -15%;  right: -20%; animation: drift2 30s ease-in-out infinite; }
@@ -72,6 +78,7 @@
     text-shadow: 0 3px 6px rgba(255, 79, 163, 0.2);
     will-change: transform;
     transform: translate3d(0, 0, 0);
+    animation-play-state: var(--play-state);
   }
   @keyframes floatUp {
     0%   { transform: translate3d(0, 110vh, 0) rotate(0deg) scale(0.8); opacity: 0; }
@@ -80,8 +87,8 @@
     100% { transform: translate3d(0, -15vh, 0) rotate(360deg) scale(1.1); opacity: 0; }
   }
 
-  /* ---------- Layout ---------- */
-  main { max-width: 720px; margin: 0 auto; padding: 0 20px 120px; }
+  /* ---------- Layout (mobile-only: fixed phone-width column, no desktop scaling) ---------- */
+  main { max-width: 460px; margin: 0 auto; padding: 0 20px 120px; }
 
   section {
     min-height: 88vh;
@@ -149,8 +156,11 @@
     margin-top: 28px;
     letter-spacing: 0.3px;
   }
-  .btn:hover { transform: translateY(-3px) scale(1.04); box-shadow: 0 14px 34px rgba(255, 79, 163, 0.55); }
-  .btn:active { transform: translateY(0) scale(0.98); }
+  .btn { touch-action: manipulation; }
+  .btn:active { transform: scale(0.96); box-shadow: 0 6px 18px rgba(255, 79, 163, 0.4); }
+  @media (hover: hover) and (pointer: fine) {
+    .btn:hover { transform: translateY(-3px) scale(1.04); box-shadow: 0 14px 34px rgba(255, 79, 163, 0.55); }
+  }
 
   /* ---------- Polaroid frames ---------- */
   .polaroid {
@@ -179,8 +189,12 @@
   }
   .tilt-left  { transform: rotate(-5deg); }
   .tilt-right { transform: rotate(5deg); }
-  .tilt-left:hover  { transform: rotate(-2deg) scale(1.04); }
-  .tilt-right:hover { transform: rotate(2deg) scale(1.04); }
+  .tilt-left:active  { transform: rotate(-3deg) scale(0.98); }
+  .tilt-right:active { transform: rotate(3deg) scale(0.98); }
+  @media (hover: hover) and (pointer: fine) {
+    .tilt-left:hover  { transform: rotate(-2deg) scale(1.04); }
+    .tilt-right:hover { transform: rotate(2deg) scale(1.04); }
+  }
 
   /* ---------- Message section ---------- */
   .message { max-width: 620px; }
@@ -214,7 +228,7 @@
     margin-bottom: 18px;
   }
   .closing .emojis { font-size: clamp(2.6rem, 12vw, 4rem); line-height: 1.2; }
-  .closing .emojis span { display: inline-block; animation: bob 2.6s ease-in-out infinite; }
+  .closing .emojis span { display: inline-block; animation: bob 2.6s ease-in-out infinite; animation-play-state: var(--play-state); }
   .closing .emojis span:nth-child(2) { animation-delay: 0.3s; }
   .closing .emojis span:nth-child(3) { animation-delay: 0.6s; }
   .closing .emojis span:nth-child(4) { animation-delay: 0.9s; }
@@ -239,8 +253,13 @@
     box-shadow: 0 10px 26px rgba(255, 79, 163, 0.5);
     transition: transform 0.2s ease;
     animation: pulse 2.4s ease-in-out infinite;
+    animation-play-state: var(--play-state);
+    touch-action: manipulation;
   }
-  .fab:hover { transform: scale(1.12) rotate(8deg); }
+  .fab:active { transform: scale(0.92); }
+  @media (hover: hover) and (pointer: fine) {
+    .fab:hover { transform: scale(1.12) rotate(8deg); }
+  }
   @keyframes pulse {
     0%, 100% { box-shadow: 0 10px 26px rgba(255, 79, 163, 0.5); }
     50% { box-shadow: 0 10px 40px rgba(255, 79, 163, 0.8); }
@@ -324,7 +343,7 @@
     (function () {
       const emojis = ["💗", "🎀", "✨", "⭐", "🌸", "🎈", "💕", "🦋"];
       const wrap = document.getElementById("floaties");
-      const count = window.innerWidth < 600 ? 8 : 12;
+      const count = 8; /* mobile-only: fixed light count for smooth compositing on phones */
       for (let i = 0; i < count; i++) {
         const el = document.createElement("div");
         el.className = "floatie";
@@ -369,9 +388,10 @@
       window.addEventListener("resize", resize);
 
       const colors = ["#FF4FA3", "#E0BBFF", "#B8FFF0", "#FFD1E8", "#ffef8f", "#ff8ac2"];
-      const shapes = ["rect", "circle", "heart"];
+      /* rect/circle only — cheap per-frame fills; the bezier heart draw was the priciest shape on low-end phones */
+      const shapes = ["rect", "circle"];
 
-      const MAX_PARTICLES = 220;
+      const MAX_PARTICLES = 140;
 
       function burst(n) {
         const cx = canvas.width / 2;
@@ -397,17 +417,6 @@
         if (!running) { running = true; requestAnimationFrame(tick); }
       }
 
-      function drawHeart(x, y, s, color) {
-        ctx.fillStyle = color;
-        ctx.beginPath();
-        ctx.moveTo(x, y + s * 0.3);
-        ctx.bezierCurveTo(x, y, x - s / 2, y, x - s / 2, y + s * 0.3);
-        ctx.bezierCurveTo(x - s / 2, y + s * 0.6, x, y + s * 0.8, x, y + s);
-        ctx.bezierCurveTo(x, y + s * 0.8, x + s / 2, y + s * 0.6, x + s / 2, y + s * 0.3);
-        ctx.bezierCurveTo(x + s / 2, y, x, y, x, y + s * 0.3);
-        ctx.fill();
-      }
-
       function tick() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         particles = particles.filter((p) => p.life > 0 && p.y < canvas.height + 40);
@@ -421,16 +430,13 @@
           ctx.globalAlpha = Math.max(0, p.life);
           ctx.translate(p.x, p.y);
           ctx.rotate(p.rot);
+          ctx.fillStyle = p.color;
           if (p.shape === "rect") {
-            ctx.fillStyle = p.color;
             ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
-          } else if (p.shape === "circle") {
-            ctx.fillStyle = p.color;
+          } else {
             ctx.beginPath();
             ctx.arc(0, 0, p.size / 2, 0, Math.PI * 2);
             ctx.fill();
-          } else {
-            drawHeart(0, -p.size / 2, p.size, p.color);
           }
           ctx.restore();
         });
@@ -445,12 +451,20 @@
       return { burst };
     })();
 
-    document.getElementById("surpriseBtn").addEventListener("click", () => confetti.burst(140));
-    document.getElementById("finalBtn").addEventListener("click", () => confetti.burst(180));
-    document.getElementById("fab").addEventListener("click", () => confetti.burst(160));
+    document.getElementById("surpriseBtn").addEventListener("click", () => confetti.burst(80), { passive: true });
+    document.getElementById("finalBtn").addEventListener("click", () => confetti.burst(100), { passive: true });
+    document.getElementById("fab").addEventListener("click", () => confetti.burst(90), { passive: true });
 
     /* gentle confetti on load */
-    window.addEventListener("load", () => setTimeout(() => confetti.burst(90), 500));
+    window.addEventListener("load", () => setTimeout(() => confetti.burst(55), 500));
+
+    /* pause CSS-driven ambient animations while the tab/app is backgrounded */
+    document.addEventListener("visibilitychange", () => {
+      document.documentElement.style.setProperty(
+        "--play-state",
+        document.hidden ? "paused" : "running"
+      );
+    });
   </script>
 </body>
 </html>
