@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Happy Girlfriend Day, Aakriti 💖</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;700&family=Quicksand:wght@400;500;600;700&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --pink-1:#ffe3ee;
+    --pink-2:#ffc2dd;
+    --pink-3:#ff9ec7;
+    --rose:#ff5c95;
+    --deep:#d63384;
+    --plum:#6a2c5a;
+    --cream:#fff6fb;
+    --gold:#ffd66b;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Quicksand',sans-serif;
+    color:var(--plum);
+    background:linear-gradient(160deg,#fff0f7 0%,#ffe3ee 40%,#ffe9f4 100%);
+    overflow-x:hidden;
+  }
+
+  /* floating hearts background */
+  .hearts{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+  .hearts span{
+    position:absolute;bottom:-40px;font-size:1.4rem;opacity:.7;
+    animation:rise linear infinite;
+    filter:drop-shadow(0 4px 8px rgba(214,51,132,.25));
+  }
+  @keyframes rise{
+    0%{transform:translateY(0) rotate(0);opacity:0}
+    10%{opacity:.8}
+    100%{transform:translateY(-115vh) rotate(360deg);opacity:0}
+  }
+
+  section{position:relative;z-index:1;padding:80px 22px;max-width:900px;margin:0 auto}
+
+  /* HERO */
+  .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding-top:40px}
+  .badge{
+    display:inline-block;background:rgba(255,255,255,.7);backdrop-filter:blur(6px);
+    border:1px solid rgba(255,92,149,.35);color:var(--rose);
+    padding:8px 20px;border-radius:999px;font-weight:600;letter-spacing:.5px;
+    font-size:.85rem;margin-bottom:26px;box-shadow:0 8px 24px rgba(255,92,149,.15)
+  }
+  .hero h1{
+    font-family:'Dancing Script',cursive;font-weight:700;line-height:1.05;
+    font-size:clamp(3rem,11vw,6.5rem);
+    background:linear-gradient(120deg,var(--rose),var(--deep),#b5179e);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    margin-bottom:6px;
+  }
+  .hero .sub{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(1.1rem,3.4vw,1.7rem);color:var(--deep);margin-bottom:18px}
+  .hero .from{font-size:1rem;color:#a15079;margin-bottom:38px}
+  .scroll-cue{margin-top:20px;font-size:.8rem;color:#c76ba0;animation:bob 1.8s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
+
+  .heart-btn{
+    border:none;cursor:pointer;font-family:'Quicksand',sans-serif;font-weight:700;
+    background:linear-gradient(120deg,var(--rose),var(--deep));color:#fff;
+    padding:15px 34px;border-radius:999px;font-size:1.05rem;
+    box-shadow:0 14px 30px rgba(214,51,132,.35);transition:transform .2s,box-shadow .2s;
+  }
+  .heart-btn:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 20px 40px rgba(214,51,132,.45)}
+  .heart-btn:active{transform:scale(.97)}
+
+  /* generic cards */
+  .card{
+    background:rgba(255,255,255,.72);backdrop-filter:blur(10px);
+    border:1px solid rgba(255,158,199,.5);border-radius:28px;padding:38px 30px;
+    box-shadow:0 20px 50px rgba(214,51,132,.12);
+  }
+  h2.title{
+    font-family:'Dancing Script',cursive;font-size:clamp(2.2rem,7vw,3.4rem);
+    color:var(--deep);text-align:center;margin-bottom:10px;
+  }
+  .title-sub{text-align:center;color:#b06592;margin-bottom:36px;font-weight:500}
+
+  /* one in a million */
+  .million-num{
+    font-family:'Playfair Display',serif;font-weight:700;text-align:center;
+    font-size:clamp(2.6rem,9vw,4.4rem);color:var(--rose);line-height:1;margin:8px 0 4px;
+  }
+  .million-cap{text-align:center;font-style:italic;font-family:'Playfair Display',serif;color:var(--plum);font-size:1.15rem;line-height:1.7}
+
+  /* reasons grid */
+  .reasons{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:8px}
+  .reason{
+    background:linear-gradient(150deg,#fff,#fff2f8);border:1px solid rgba(255,158,199,.5);
+    border-radius:22px;padding:22px 20px;display:flex;gap:14px;align-items:flex-start;
+    transition:transform .25s,box-shadow .25s;cursor:default;
+  }
+  .reason:hover{transform:translateY(-5px);box-shadow:0 16px 32px rgba(214,51,132,.18)}
+  .reason .em{font-size:1.7rem;line-height:1}
+  .reason p{font-weight:500;color:var(--plum);line-height:1.5}
+
+  /* love letter */
+  .letter{font-family:'Playfair Display',serif;line-height:2;font-size:1.12rem;color:#5c2a4c}
+  .letter p{margin-bottom:18px}
+  .letter .sign{font-family:'Dancing Script',cursive;font-size:2rem;color:var(--rose);text-align:right;margin-top:10px}
+
+  /* surprise */
+  .surprise-wrap{text-align:center}
+  #surpriseMsg{
+    margin-top:26px;font-family:'Dancing Script',cursive;font-size:clamp(1.6rem,5vw,2.4rem);
+    color:var(--deep);min-height:60px;opacity:0;transform:translateY(10px);transition:.5s;
+  }
+  #surpriseMsg.show{opacity:1;transform:translateY(0)}
+
+  /* counter */
+  .promise-list{list-style:none;display:grid;gap:12px}
+  .promise-list li{
+    background:rgba(255,255,255,.7);border-left:5px solid var(--rose);
+    padding:14px 18px;border-radius:14px;font-weight:500;color:var(--plum);
+  }
+
+  footer{text-align:center;padding:50px 20px 70px;color:#b06592;position:relative;z-index:1}
+  footer .big{font-family:'Dancing Script',cursive;font-size:2rem;color:var(--deep);margin-bottom:8px}
+
+  .fade-up{opacity:0;transform:translateY(30px);transition:opacity .8s ease,transform .8s ease}
+  .fade-up.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<div class="hearts" id="hearts"></div>
+
+<!-- HERO -->
+<section class="hero">
+  <span class="badge">💌 Happy Girlfriend Day</span>
+  <h1>Aakriti Kaushik</h1>
+  <p class="sub">my favorite person, my whole heart</p>
+  <p class="from">a little something, made just for you 🎀</p>
+  <button class="heart-btn" onclick="burst()">Tap for a hug 🤗</button>
+  <p class="scroll-cue">scroll down, there's more 💕</p>
+</section>
+
+<!-- ONE IN A MILLION -->
+<section>
+  <div class="card fade-up">
+    <h2 class="title">One in a Million</h2>
+    <p class="title-sub">actually… let me do the math</p>
+    <div class="million-num">7,900,000,000 people</div>
+    <p class="million-cap">
+      out of everyone in this whole wide world,<br/>
+      somehow the universe led me to <b>you</b>.<br/>
+      not one in a million — <b>one in eight billion</b>.<br/>
+      and I'd choose you every single time. 🌍💗
+    </p>
+  </div>
+</section>
+
+<!-- REASONS -->
+<section>
+  <div class="fade-up">
+    <h2 class="title">Reasons You're Amazing</h2>
+    <p class="title-sub">a very incomplete list (the full one wouldn't fit)</p>
+    <div class="reasons">
+      <div class="reason"><span class="em">😊</span><p>Your smile makes even my worst days feel okay.</p></div>
+      <div class="reason"><span class="em">🫶</span><p>The way you care about the little things about me.</p></div>
+      <div class="reason"><span class="em">😂</span><p>You laugh at my dumb jokes (or at least pretend to).</p></div>
+      <div class="reason"><span class="em">🌸</span><p>You're kind in a way that makes the world softer.</p></div>
+      <div class="reason"><span class="em">✨</span><p>You make ordinary moments feel like magic.</p></div>
+      <div class="reason"><span class="em">🏡</span><p>Being with you feels like coming home.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- LOVE LETTER -->
+<section>
+  <div class="card fade-up letter">
+    <h2 class="title">A Little Letter</h2>
+    <p class="title-sub">from me, to you 💐</p>
+    <p>Dear Aakriti,</p>
+    <p>I'm not always the best with words, so I made this instead. Every day with you feels like a gift I didn't know I was lucky enough to receive.</p>
+    <p>You make me want to be better, laugh harder, and love deeper. Thank you for being exactly, wonderfully <i>you</i>.</p>
+    <p>Happy Girlfriend Day, my love. Here's to us — today and always.</p>
+    <p class="sign">— Yours, always 💖</p>
+  </div>
+</section>
+
+<!-- PROMISES -->
+<section>
+  <div class="card fade-up">
+    <h2 class="title">My Promises to You</h2>
+    <p class="title-sub">little vows, big meaning</p>
+    <ul class="promise-list">
+      <li>💗 To always listen, even the tiny things.</li>
+      <li>☕ To bring you comfort on the hard days.</li>
+      <li>🎉 To celebrate every win with you, big or small.</li>
+      <li>🤝 To choose <i>us</i>, again and again.</li>
+      <li>😘 To remind you how loved you are — not just today.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- SURPRISE -->
+<section>
+  <div class="card fade-up surprise-wrap">
+    <h2 class="title">A Tiny Surprise</h2>
+    <p class="title-sub">go on, press it 👇</p>
+    <button class="heart-btn" onclick="surprise()">Reveal 💝</button>
+    <div id="surpriseMsg"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="big">I love you, Aakriti 💕</div>
+  <p>Made with love, just for you • Happy Girlfriend Day 🎀</p>
+</footer>
+
+<script>
+  // floating hearts
+  const emojis=['💖','💕','🌸','💗','✨','🌷','💞','🎀'];
+  const hc=document.getElementById('hearts');
+  for(let i=0;i<26;i++){
+    const s=document.createElement('span');
+    s.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+    s.style.left=Math.random()*100+'vw';
+    s.style.fontSize=(0.9+Math.random()*1.8)+'rem';
+    s.style.animationDuration=(7+Math.random()*10)+'s';
+    s.style.animationDelay=(Math.random()*10)+'s';
+    hc.appendChild(s);
+  }
+
+  // hug burst
+  function burst(){
+    for(let i=0;i<24;i++){
+      const s=document.createElement('span');
+      s.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+      s.style.position='fixed';s.style.left='50%';s.style.top='45%';
+      s.style.fontSize=(1.2+Math.random()*1.6)+'rem';
+      s.style.zIndex=50;s.style.pointerEvents='none';s.style.transition='transform 1.4s ease-out, opacity 1.4s ease-out';
+      document.body.appendChild(s);
+      const ang=Math.random()*Math.PI*2, dist=120+Math.random()*220;
+      requestAnimationFrame(()=>{
+        s.style.transform=`translate(${Math.cos(ang)*dist}px,${Math.sin(ang)*dist}px) rotate(${Math.random()*360}deg)`;
+        s.style.opacity='0';
+      });
+      setTimeout(()=>s.remove(),1500);
+    }
+  }
+
+  // surprise messages
+  const msgs=[
+    "You + Me = Forever 💑",
+    "You're my favorite hello & hardest goodbye 💌",
+    "Every love song makes sense because of you 🎶",
+    "You're my once in a lifetime 🌟",
+    "I'd cross oceans just to make you smile 🌊💗",
+    "P.S. I'm smiling right now thinking of you 😊"
+  ];
+  let mi=0;
+  function surprise(){
+    const el=document.getElementById('surpriseMsg');
+    el.classList.remove('show');
+    setTimeout(()=>{el.textContent=msgs[mi%msgs.length];mi++;el.classList.add('show');burst();},120);
+  }
+
+  // scroll reveal
+  const io=new IntersectionObserver((es)=>{
+    es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')});
+  },{threshold:.15});
+  document.querySelectorAll('.fade-up').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
